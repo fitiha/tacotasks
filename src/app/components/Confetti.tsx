@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { JSX, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import type React from "react"; // Added import for React
 
@@ -41,8 +41,9 @@ const ConfettiPiece: React.FC<ConfettiPieceProps> = ({ color }) => {
     />
   );
 };
+
 export default function Confetti() {
-  const [pieces, setPieces] = useState<React.ReactNode[]>([]);
+  const [pieces, setPieces] = useState<JSX.Element[]>([]);
 
   useEffect(() => {
     const newPieces = Array.from({ length: 50 }, (_, i) => (
