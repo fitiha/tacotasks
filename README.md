@@ -64,8 +64,7 @@ src/
 │   ├── ProgressGraph.tsx         // Visual representation of progress
 │   └── TaskList.tsx              // Displays the list of tasks
 │
-└── pages/
-    └── page.tsx                  // Main page component
+└── page.tsx                  // Main page component
 ```
 
 ## 🎨 Building for Production
