@@ -3,13 +3,18 @@
 import { useRef, useCallback } from "react";
 import { motion } from "framer-motion";
 import { useDrag, useDrop } from "react-dnd";
+import { FiCheck } from "react-icons/fi";
+import { LuUndo2 } from "react-icons/lu";
+import { IoArchiveSharp } from "react-icons/io5";
+import { FaEdit } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
 import {
-  FiCheck,
-  FiTrash2,
-  FiEdit2,
-  FiArchive,
-  FiRefreshCw,
-} from "react-icons/fi";
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import EmptyState from "./EmptyState";
 
 interface Task {
   id: string;
@@ -18,7 +23,6 @@ interface Task {
   completed: boolean;
   color: string;
   archived: boolean;
-  originalIndex: number;
 }
 
 interface TaskItemProps {
@@ -56,7 +60,7 @@ const TaskItem = ({
         return;
       }
       const dragIndex = item.index;
-      const hoverIndex = task.originalIndex;
+      const hoverIndex = index;
 
       if (dragIndex === hoverIndex) {
         return;
@@ -83,8 +87,12 @@ const TaskItem = ({
 
   const [{ isDragging }, drag] = useDrag({
     type: "TASK",
-    item: () => ({ index: task.originalIndex }), // Pass originalIndex
-    collect: (monitor) => ({ isDragging: monitor.isDragging() }),
+    item: () => {
+      return { id: task.id, index };
+    },
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
   });
 
   const opacity = isDragging ? 0 : 1;
@@ -101,7 +109,7 @@ const TaskItem = ({
       transition={{ duration: 0.2 }}
       className={`flex items-center justify-between p-3 rounded-lg ${task.color} bg-opacity-20 dark:bg-opacity-40 cursor-move mb-2`}
     >
-      <div className="flex items-center flex-grow mr-2">
+      <div className="flex items-center flex-grow mr-2 min-w-0">
         <button
           onClick={() => onToggleTask(task.id)}
           className={`w-5 h-5 mr-3 rounded-full border-2 flex items-center justify-center ${
@@ -112,9 +120,10 @@ const TaskItem = ({
         >
           {task.completed && <FiCheck className="text-white" />}
         </button>
-        <div>
+        {/* Changed this div */}
+        <div className="flex flex-col min-w-0 overflow-hidden">
           <span
-            className={`${
+            className={`truncate ${
               task.completed
                 ? "line-through text-gray-500 dark:text-gray-400"
                 : "text-gray-800 dark:text-white"
@@ -122,47 +131,80 @@ const TaskItem = ({
           >
             {task.title}
           </span>
-          <p className="text-sm text-gray-600 dark:text-gray-300">
+          <p className="text-sm text-gray-600 dark:text-gray-300 truncate">
             {task.description}
           </p>
         </div>
       </div>
       <div className="flex space-x-2">
-        <motion.button
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-          onClick={() => onEditTask(task)}
-          className="text-blue-500 hover:text-blue-700 focus:outline-none dark:text-blue-400 dark:hover:text-blue-300"
-        >
-          <FiEdit2 className="w-5 h-5" />
-        </motion.button>
+        {/* Edit Button */}
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={() => onEditTask(task)}
+              className="text-blue-500 hover:text-blue-700 focus:outline-none dark:text-blue-400 dark:hover:text-blue-300"
+            >
+              <FaEdit className="w-5 h-5" />
+            </motion.button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Edit</p>
+          </TooltipContent>
+        </Tooltip>
+
+        {/* Archive/Restore Button */}
         {task.archived ? (
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            onClick={() => onRestoreTask(task.id)}
-            className="text-green-500 hover:text-green-700 focus:outline-none dark:text-green-400 dark:hover:text-green-300"
-          >
-            <FiRefreshCw className="w-5 h-5" />
-          </motion.button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={() => onRestoreTask(task.id)}
+                className="text-green-500 hover:text-green-700 focus:outline-none dark:text-green-400 dark:hover:text-green-300"
+              >
+                <LuUndo2 className="w-5 h-5" />
+              </motion.button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Restore</p>
+            </TooltipContent>
+          </Tooltip>
         ) : (
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            onClick={() => onArchiveTask(task.id)}
-            className="text-yellow-500 hover:text-yellow-700 focus:outline-none dark:text-yellow-400 dark:hover:text-yellow-300"
-          >
-            <FiArchive className="w-5 h-5" />
-          </motion.button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={() => onArchiveTask(task.id)}
+                className="text-yellow-500 hover:text-yellow-700 focus:outline-none dark:text-yellow-400 dark:hover:text-yellow-300"
+              >
+                <IoArchiveSharp className="w-5 h-5" />
+              </motion.button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Archive</p>
+            </TooltipContent>
+          </Tooltip>
         )}
-        <motion.button
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-          onClick={() => onRemoveTask(task.id)}
-          className="text-red-500 hover:text-red-700 focus:outline-none dark:text-red-400 dark:hover:text-red-300"
-        >
-          <FiTrash2 className="w-5 h-5" />
-        </motion.button>
+
+        {/* Delete Button */}
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={() => onRemoveTask(task.id)}
+              className="text-red-500 hover:text-red-700 focus:outline-none dark:text-red-400 dark:hover:text-red-300"
+            >
+              <MdDelete className="w-5 h-5" />
+            </motion.button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Delete</p>
+          </TooltipContent>
+        </Tooltip>
       </div>
     </motion.li>
   );
@@ -186,7 +228,9 @@ export default function TaskList({
   onArchiveTask,
   onRestoreTask,
   moveTask,
-}: TaskListProps) {
+  filter,
+  searchTerm
+}: TaskListProps & { filter: string; searchTerm: string }) {
   const renderTask = useCallback(
     (task: Task, index: number) => {
       return (
@@ -213,9 +257,26 @@ export default function TaskList({
     ]
   );
 
+  const getEmptyStateVariant = () => {
+    if (filter === "archived") return "archived";
+    if (searchTerm) return "search";
+    return "default";
+  };
+
   return (
-    <ul className="space-y-2">
-      {tasks.map((task, index) => renderTask(task, index))}
-    </ul>
+    <TooltipProvider>
+      <ul className="space-y-2">
+        {tasks.length > 0 ? 
+          tasks.map((task, index) => renderTask(task, index)) :
+          <EmptyState 
+            variant={getEmptyStateVariant()}
+            searchTerm={searchTerm}
+          />
+        }
+      </ul>
+    </TooltipProvider>
   );
 }
+
+
+

@@ -66,6 +66,20 @@ export default function Home() {
     ]);
   };
 
+  //event listeners
+  useEffect(() => {
+    const handleClearSearch = () => setSearchTerm("");
+    const handleAddTask = () => setIsAddModalOpen(true);
+
+    document.addEventListener("clearSearch", handleClearSearch);
+    document.addEventListener("addTask", handleAddTask);
+
+    return () => {
+      document.removeEventListener("clearSearch", handleClearSearch);
+      document.removeEventListener("addTask", handleAddTask);
+    };
+  }, []);
+
   const toggleTask = (id: string) => {
     setTasks(
       tasks.map((task) => {
@@ -148,7 +162,6 @@ export default function Home() {
               alt="logo"
               width={95}
               height={83}
-              priority
               className="rounded-xl"
             />
             <ThemeToggle
@@ -166,16 +179,15 @@ export default function Home() {
         >
           <AnimatePresence>
             <TaskList
-              tasks={filteredTasks.map(task => ({
-                ...task,
-                originalIndex: tasks.findIndex(t => t.id === task.id),
-              }))}
+              tasks={filteredTasks}
               onToggleTask={toggleTask}
               onRemoveTask={removeTask}
               onEditTask={setEditingTask}
               onArchiveTask={archiveTask}
               onRestoreTask={restoreTask}
               moveTask={moveTask}
+              filter={filter}
+              searchTerm={searchTerm}
             />
           </AnimatePresence>
         </div>
