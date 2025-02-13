@@ -4,15 +4,19 @@ import { Player } from "@lottiefiles/react-lottie-player";
 import { Button } from "@/components/ui/button";
 
 import { motion } from "framer-motion";
-import { ArchiveIcon, RocketIcon } from "lucide-react";
+import { RocketIcon } from "lucide-react";
 import { FaMagnifyingGlass } from "react-icons/fa6";
+import { FaRunning } from "react-icons/fa";
 
 interface EmptyStateProps {
   variant?: "default" | "search" | "archived";
   searchTerm?: string;
 }
 
-export default function EmptyState({ variant = "default", searchTerm = "" }: EmptyStateProps) {
+export default function EmptyState({
+  variant = "default",
+  searchTerm = "",
+}: EmptyStateProps) {
   const animations = {
     default: "/lottie/no-task.json",
     search: "/lottie/no-search.json",
@@ -24,20 +28,22 @@ export default function EmptyState({ variant = "default", searchTerm = "" }: Emp
       title: "No Tasks Found",
       description: "Let's get started by creating your first task!",
       icon: <RocketIcon className="h-6 w-6" />,
-      action: "Create New Task"
+      action: "Create New Task",
     },
     search: {
       title: "No Matching Tasks",
-      description: searchTerm ? `No results for "${searchTerm}"` : "Try searching for something else",
+      description: searchTerm
+        ? `No results for "${searchTerm}"`
+        : "Try searching for something else",
       icon: <FaMagnifyingGlass className="h-6 w-6" />,
-      action: "Clear Search"
+      action: "Clear Search",
     },
     archived: {
       title: "No Archived Tasks",
       description: "Tasks you archive will appear here",
-      icon: <ArchiveIcon className="h-6 w-6" />,
-      action: "View Active Tasks"
-    }
+      icon: <FaRunning className="h-6 w-6" />,
+      action: "View Active Tasks",
+    },
   };
 
   const current = messages[variant];
@@ -49,13 +55,8 @@ export default function EmptyState({ variant = "default", searchTerm = "" }: Emp
       transition={{ duration: 0.4 }}
       className="flex flex-col items-center justify-center py-12 gap-6 text-center"
     >
-      <Player
-        autoplay
-        loop
-        src={animations[variant]}
-        className="h-64 w-64"
-      />
-      
+      <Player autoplay loop src={animations[variant]} className="h-64 w-64" />
+
       <div className="space-y-2">
         <h3 className="text-xl font-semibold tracking-tight dark:text-gray-200">
           {current.title}
@@ -64,15 +65,18 @@ export default function EmptyState({ variant = "default", searchTerm = "" }: Emp
           {current.description}
         </p>
       </div>
-      
-      <Button 
+
+      <Button
         onClick={() => {
           if (variant === "search") {
             // Dispatch clear search event
-            document.dispatchEvent(new Event('clearSearch'));
+            document.dispatchEvent(new Event("clearSearch"));
+          } else if (variant === "archived") {
+            // Dispatch view active events
+            document.dispatchEvent(new Event("viewActive"));
           } else {
             // Dispatch add task event
-            document.dispatchEvent(new Event('addTask'));
+            document.dispatchEvent(new Event("addTask"));
           }
         }}
         className="gap-2 dark:text-gray-400"

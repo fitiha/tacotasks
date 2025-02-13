@@ -66,17 +66,21 @@ export default function Home() {
     ]);
   };
 
-  //event listeners
+  //event listeners for empty state dispatching clicks 
   useEffect(() => {
     const handleClearSearch = () => setSearchTerm("");
     const handleAddTask = () => setIsAddModalOpen(true);
+    const handleViewActive = () => setFilter("active");
+    
 
     document.addEventListener("clearSearch", handleClearSearch);
     document.addEventListener("addTask", handleAddTask);
+    document.addEventListener("viewActive", handleViewActive);
 
     return () => {
       document.removeEventListener("clearSearch", handleClearSearch);
       document.removeEventListener("addTask", handleAddTask);
+      document.removeEventListener("viewActive", handleViewActive);
     };
   }, []);
 
