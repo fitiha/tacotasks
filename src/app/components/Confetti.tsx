@@ -41,9 +41,8 @@ const ConfettiPiece: React.FC<ConfettiPieceProps> = ({ color }) => {
     />
   );
 };
-
 export default function Confetti() {
-  const [pieces, setPieces] = useState<JSX.Element[]>([]);
+  const [pieces, setPieces] = useState<React.ReactNode[]>([]);
 
   useEffect(() => {
     const newPieces = Array.from({ length: 50 }, (_, i) => (
