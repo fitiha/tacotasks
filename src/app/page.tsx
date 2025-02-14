@@ -36,26 +36,32 @@ export default function Home() {
   const [showConfetti, setShowConfetti] = useState(false);
 
   useEffect(() => {
-    const storedTasks = localStorage.getItem("tasks");
-    if (storedTasks) {
-      setTasks(JSON.parse(storedTasks));
-    }
-    const storedTheme = localStorage.getItem("theme");
-    if (storedTheme) {
-      setIsDarkMode(storedTheme === "dark");
+    if (typeof window !== "undefined") {
+      const storedTasks = localStorage.getItem("tasks");
+      if (storedTasks) {
+        setTasks(JSON.parse(storedTasks));
+      }
+      const storedTheme = localStorage.getItem("theme");
+      if (storedTheme) {
+        setIsDarkMode(storedTheme === "dark");
+      }
     }
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("tasks", JSON.stringify(tasks));
+    if (typeof window !== "undefined") {
+      localStorage.setItem("tasks", JSON.stringify(tasks));
+    }
   }, [tasks]);
 
   useEffect(() => {
-    localStorage.setItem("theme", isDarkMode ? "dark" : "light");
-    if (isDarkMode) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
+    if (typeof window !== "undefined") {
+      localStorage.setItem("theme", isDarkMode ? "dark" : "light");
+      if (isDarkMode) {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
     }
   }, [isDarkMode]);
 
@@ -66,22 +72,23 @@ export default function Home() {
     ]);
   };
 
-  //event listeners for empty state dispatching clicks 
+  //event listeners for empty state dispatching clicks
   useEffect(() => {
-    const handleClearSearch = () => setSearchTerm("");
-    const handleAddTask = () => setIsAddModalOpen(true);
-    const handleViewActive = () => setFilter("active");
-    
+    if (typeof window !== "undefined") {
+      const handleClearSearch = () => setSearchTerm("");
+      const handleAddTask = () => setIsAddModalOpen(true);
+      const handleViewActive = () => setFilter("active");
 
-    document.addEventListener("clearSearch", handleClearSearch);
-    document.addEventListener("addTask", handleAddTask);
-    document.addEventListener("viewActive", handleViewActive);
+      document.addEventListener("clearSearch", handleClearSearch);
+      document.addEventListener("addTask", handleAddTask);
+      document.addEventListener("viewActive", handleViewActive);
 
-    return () => {
-      document.removeEventListener("clearSearch", handleClearSearch);
-      document.removeEventListener("addTask", handleAddTask);
-      document.removeEventListener("viewActive", handleViewActive);
-    };
+      return () => {
+        document.removeEventListener("clearSearch", handleClearSearch);
+        document.removeEventListener("addTask", handleAddTask);
+        document.removeEventListener("viewActive", handleViewActive);
+      };
+    }
   }, []);
 
   const toggleTask = (id: string) => {
@@ -183,9 +190,9 @@ export default function Home() {
         >
           <AnimatePresence>
             <TaskList
-              tasks={filteredTasks.map(task => ({
+              tasks={filteredTasks.map((task) => ({
                 ...task,
-                originalIndex: tasks.findIndex(t => t.id === task.id),
+                originalIndex: tasks.findIndex((t) => t.id === task.id),
               }))}
               onToggleTask={toggleTask}
               onRemoveTask={removeTask}

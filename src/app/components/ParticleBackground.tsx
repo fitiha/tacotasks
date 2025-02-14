@@ -34,7 +34,10 @@ export default function ParticleBackground({ isDarkMode }: ParticleBackgroundPro
 
     function animate() {
       requestAnimationFrame(animate)
-      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      if (!ctx) return
+      if (canvas) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+      }
 
       particles.forEach((particle) => {
         ctx.beginPath()
@@ -45,8 +48,8 @@ export default function ParticleBackground({ isDarkMode }: ParticleBackgroundPro
         particle.x += particle.dx
         particle.y += particle.dy
 
-        if (particle.x < 0 || particle.x > canvas.width) particle.dx = -particle.dx
-        if (particle.y < 0 || particle.y > canvas.height) particle.dy = -particle.dy
+        if (canvas && (particle.x < 0 || particle.x > canvas.width)) particle.dx = -particle.dx
+        if (canvas && (particle.y < 0 || particle.y > canvas.height)) particle.dy = -particle.dy
       })
     }
 

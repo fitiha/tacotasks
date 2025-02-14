@@ -39,7 +39,6 @@ interface TaskItemProps {
 
 const TaskItem = ({
   task,
-  index,
   moveTask,
   onToggleTask,
   onRemoveTask,
@@ -49,13 +48,11 @@ const TaskItem = ({
 }: TaskItemProps) => {
   const ref = useRef<HTMLLIElement>(null);
 
-  const [{ handlerId }, drop] = useDrop({
+  const [{ handlerId }, drop] = useDrop<{ index: number }, unknown, { handlerId: string | null }>({
     accept: "TASK",
-    collect(monitor) {
-      return {
-        handlerId: monitor.getHandlerId(),
-      };
-    },
+    collect: (monitor) => ({
+      handlerId: monitor.getHandlerId() as string | null,
+    }),
     hover(item: { index: number }, monitor) {
       if (!ref.current) {
         return;

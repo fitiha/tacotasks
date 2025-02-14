@@ -1,12 +1,17 @@
 "use client";
 
-import { Player } from "@lottiefiles/react-lottie-player";
+import dynamic from "next/dynamic";
 import { Button } from "@/components/ui/button";
-
 import { motion } from "framer-motion";
 import { RocketIcon } from "lucide-react";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import { FaRunning } from "react-icons/fa";
+
+// Dynamically importing the Lottie Player with SSR disabled
+const Player = dynamic(
+  () => import("@lottiefiles/react-lottie-player").then((mod) => mod.Player),
+  { ssr: false }
+);
 
 interface EmptyStateProps {
   variant?: "default" | "search" | "archived";
@@ -55,6 +60,7 @@ export default function EmptyState({
       transition={{ duration: 0.4 }}
       className="flex flex-col items-center justify-center py-12 gap-6 text-center"
     >
+      {/* Dynamically imported Player component */}
       <Player autoplay loop src={animations[variant]} className="h-64 w-64" />
 
       <div className="space-y-2">
