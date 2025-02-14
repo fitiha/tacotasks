@@ -6,7 +6,7 @@ import type React from "react"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Task Manager",
+  title: "Taco Task Manager",
   description: "A modern and stylish task manager application",
   icons: {
     icon: "/taco-favicon.png", 
