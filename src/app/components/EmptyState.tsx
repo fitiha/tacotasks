@@ -85,7 +85,7 @@ export default function EmptyState({
             document.dispatchEvent(new Event("addTask"));
           }
         }}
-        className="gap-2 dark:text-gray-400"
+        className="gap-2 dark:text-gray-400 hover:bg-violet-700 hover:text-white"
         variant={"outline"}
       >
         {current.icon}
