@@ -196,6 +196,7 @@ export default function Home() {
               width={95}
               height={83}
               className="rounded-xl"
+              priority
             />
             <div className="flex items-center space-x-4">
               <ThemeToggle
