@@ -27,7 +27,7 @@ Taco Tasks is a powerful and visually appealing task management application buil
 
 ## 📸 Screenshots
 
-![Taco Tasks Screenshot](/public/screenshots/img1.jpg)
+<img src="/public/screenshots/img1.jpg" alt="Taco Tasks Screenshot" width="800">
 
 ## 📦 Getting Started
 
