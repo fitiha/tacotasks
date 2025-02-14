@@ -183,7 +183,10 @@ export default function Home() {
         >
           <AnimatePresence>
             <TaskList
-              tasks={filteredTasks}
+              tasks={filteredTasks.map(task => ({
+                ...task,
+                originalIndex: tasks.findIndex(t => t.id === task.id),
+              }))}
               onToggleTask={toggleTask}
               onRemoveTask={removeTask}
               onEditTask={setEditingTask}

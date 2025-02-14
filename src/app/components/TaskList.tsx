@@ -23,6 +23,7 @@ interface Task {
   completed: boolean;
   color: string;
   archived: boolean;
+  originalIndex: number;  
 }
 
 interface TaskItemProps {
@@ -60,7 +61,7 @@ const TaskItem = ({
         return;
       }
       const dragIndex = item.index;
-      const hoverIndex = index;
+      const hoverIndex = task.originalIndex;
 
       if (dragIndex === hoverIndex) {
         return;
@@ -87,9 +88,7 @@ const TaskItem = ({
 
   const [{ isDragging }, drag] = useDrag({
     type: "TASK",
-    item: () => {
-      return { id: task.id, index };
-    },
+    item: () => ({ index: task.originalIndex }),
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),
@@ -229,7 +228,7 @@ export default function TaskList({
   onRestoreTask,
   moveTask,
   filter,
-  searchTerm
+  searchTerm,
 }: TaskListProps & { filter: string; searchTerm: string }) {
   const renderTask = useCallback(
     (task: Task, index: number) => {
@@ -266,17 +265,15 @@ export default function TaskList({
   return (
     <TooltipProvider>
       <ul className="space-y-2">
-        {tasks.length > 0 ? 
-          tasks.map((task, index) => renderTask(task, index)) :
-          <EmptyState 
+        {tasks.length > 0 ? (
+          tasks.map((task, index) => renderTask(task, index))
+        ) : (
+          <EmptyState
             variant={getEmptyStateVariant()}
             searchTerm={searchTerm}
           />
-        }
+        )}
       </ul>
     </TooltipProvider>
   );
 }
-
-
-
