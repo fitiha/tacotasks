@@ -30,7 +30,7 @@ Taco Tasks is a powerful and visually appealing task management application buil
 
 ```bash
 # Clone the repository
-$ git clone https://github.com/your-username/taco-tasks.git
+$ git clone https://github.com/fitiha/tacotasks.git
 $ cd taco-tasks
 
 # Install dependencies
