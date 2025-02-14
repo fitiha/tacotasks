@@ -14,6 +14,15 @@ import ProgressGraph from "./components/ProgressGraph";
 import Confetti from "./components/Confetti";
 import ParticleBackground from "./components/ParticleBackground";
 import Image from "next/image";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { InfoIcon } from "lucide-react";
+import DeveloperInfoModal from "./components/DeveloperInfoModal";
+import DeleteConfirmationModal from "./components/DeleteConfirmationModal";
 
 interface Task {
   id: string;
@@ -34,6 +43,8 @@ export default function Home() {
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [isDeveloperInfoOpen, setIsDeveloperInfoOpen] = useState(false);
+  const [taskToDelete, setTaskToDelete] = useState<string | null>(null);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -108,7 +119,18 @@ export default function Home() {
   };
 
   const removeTask = (id: string) => {
-    setTasks(tasks.filter((task) => task.id !== id));
+    setTaskToDelete(id);
+  };
+
+  const confirmDelete = () => {
+    if (taskToDelete) {
+      setTasks(tasks.filter((task) => task.id !== taskToDelete));
+      setTaskToDelete(null);
+    }
+  };
+
+  const cancelDelete = () => {
+    setTaskToDelete(null);
   };
 
   const editTask = (updatedTask: Task) => {
@@ -175,10 +197,27 @@ export default function Home() {
               height={83}
               className="rounded-xl"
             />
-            <ThemeToggle
-              isDarkMode={isDarkMode}
-              setIsDarkMode={setIsDarkMode}
-            />
+            <div className="flex items-center space-x-4">
+              <ThemeToggle
+                isDarkMode={isDarkMode}
+                setIsDarkMode={setIsDarkMode}
+              />
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={() => setIsDeveloperInfoOpen(true)}
+                      className="text-gray-500 hover:text-gray-700 focus:outline-none dark:text-gray-400 dark:hover:text-gray-300"
+                    >
+                      <InfoIcon className="w-6 h-6" />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Developer Info</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
           </div>
           <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
           <FilterButtons filter={filter} setFilter={setFilter} />
@@ -215,6 +254,17 @@ export default function Home() {
           onAddTask={addTask}
           editingTask={editingTask}
           onEditTask={editTask}
+        />
+
+        <DeveloperInfoModal
+          isOpen={isDeveloperInfoOpen}
+          onClose={() => setIsDeveloperInfoOpen(false)}
+        />
+
+        <DeleteConfirmationModal
+          isOpen={!!taskToDelete}
+          onConfirm={confirmDelete}
+          onCancel={cancelDelete}
         />
       </motion.div>
     </DndProvider>

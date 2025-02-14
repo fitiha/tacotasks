@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import type React from "react" 
+import { Button } from "@/components/ui/button"
 
 interface Task {
   id: string
@@ -47,6 +48,9 @@ export default function AddTaskModal({ isOpen, onClose, onAddTask, editingTask, 
         onEditTask({ ...editingTask, title, description, color })
       } else {
         onAddTask({ title, description, color })
+        setTitle("")
+        setDescription("")
+        setColor("bg-purple-500")
       }
       onClose()
     }
@@ -93,15 +97,15 @@ export default function AddTaskModal({ isOpen, onClose, onAddTask, editingTask, 
                 ))}
               </div>
               <div className="flex justify-end">
-                <button type="button" onClick={onClose} className="px-4 py-2 text-gray-600 dark:text-gray-300 mr-2">
+                <Button type="button" onClick={onClose} className="px-4 py-2 text-gray-600 dark:text-gray-300 mr-2">
                   Cancel
-                </button>
-                <button
+                </Button>
+                <Button
                   type="submit"
-                  className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600"
+                  className="px-4 py-2 bg-purple-600 text-white hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600"
                 >
                   {editingTask ? "Save Changes" : "Add Task"}
-                </button>
+                </Button>
               </div>
             </form>
           </motion.div>
